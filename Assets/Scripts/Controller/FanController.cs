@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Label;
 using ScriptableObjects;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -125,11 +126,13 @@ namespace Controller
         private int _index = 0;
         private FanState _curState;
         private FanSO _fanConfig;
+        private CriticalPoints _criticalPoints;
         public void Init(Transform parent, FanSO config)
         {
             _lights = new Dictionary<int, Transform>();
             foreach (Transform child in parent)
             {
+                if(child.gameObject.CompareTag("CriticalPoints"))continue;
                 _lights[_index] = child;
                 _index += 1;
             }
@@ -137,6 +140,8 @@ namespace Controller
             _fanConfig = config;
 
             _curState = FanState.PowerOff;
+            _criticalPoints = parent.GetComponentInChildren<CriticalPoints>();
+            _criticalPoints.Tag = 1;
             OnStateChange(FanState.PowerOff);
         }
 
@@ -157,6 +162,8 @@ namespace Controller
             {
                 _lights[key].gameObject.SetActive(true);
             }
+
+            _criticalPoints.Tag = nextState == FanState.PowerOff ? 1 : 2;
         }
 
         private void TurnOffAllLights()

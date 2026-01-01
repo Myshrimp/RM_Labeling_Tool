@@ -18,6 +18,8 @@ namespace CustomInput
             _intMap = new Dictionary<string, int>();
             _vecMap = new Dictionary<string, Vector2>();
             _boolMap = new Dictionary<string, bool>();
+            HandleBoolInput();
+            HandleVec2Input();
         }
 
         private void Update()
@@ -46,6 +48,9 @@ namespace CustomInput
             _boolMap["TogglePowerOn"] = Input.GetKeyDown(KeyCode.P);
             _boolMap["ScreenShot"] = Input.GetKeyDown(KeyCode.O);
             _boolMap["Rotate"] = Input.GetKeyDown(KeyCode.R);
+            _boolMap["ControlModeRed"] = Input.GetKeyDown(KeyCode.Alpha1);
+            _boolMap["ControlModeBlue"] = Input.GetKeyDown(KeyCode.Alpha2);
+            _boolMap["ControlModeBoth"] = Input.GetKeyDown(KeyCode.Alpha3);
         }
 
         public int GetInt(string key)
