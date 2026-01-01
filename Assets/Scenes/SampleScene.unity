@@ -1285,6 +1285,8 @@ MonoBehaviour:
   fileNamePrefix: capture
   photoWidth: 1920
   photoHeight: 1080
+  skyboxSolidColor: 0
+  generatePlotImg: 1
   targetObjects:
   - {fileID: 515192455}
   - {fileID: 719155735}
@@ -2871,7 +2873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20e2f7a5da984ed5b046efd780d198ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _color: 0
+  _color: 1
   _isRTag: 0
   _box:
     center: {x: -0.30963063, y: 1.2404788, z: -0.26662922}
