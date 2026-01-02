@@ -14,7 +14,7 @@ namespace Controller
         [SerializeField] private FanControllerSO _fanControllerConfig;
         [SerializeField] private FanSO _fanConfig;
         [SerializeField] private float _curSpeed = 0;
-
+        
         private ObjectRotator _rotator;
         private bool _isRotating = false;
         private bool _isPowerOn = false;
@@ -64,11 +64,11 @@ namespace Controller
             {
                 if (i == rand1 || i == rand2)
                 {
-                    _fans[i].ChangeState(FanState.PowerOn);
+                    _fans[i].ChangeState(FanState.NotActive);
                 }
                 else
                 {
-                    _fans[i].ChangeState(FanState.HalfPowerUp);
+                    _fans[i].ChangeState(FanState.Activated);
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace Controller
         {
             for (int i = 0; i < _fans.Count; i++)
             {
-                _fans[i].ChangeState(FanState.PowerOff);
+                _fans[i].ChangeState(FanState.Idle);
             }
         }
 
@@ -118,7 +118,7 @@ namespace Controller
     
     public enum FanState
     {
-        PowerOff, HalfPowerUp, PowerOn
+        Idle, Activated, NotActive
     }
     public class Fan
     {
@@ -139,10 +139,10 @@ namespace Controller
 
             _fanConfig = config;
 
-            _curState = FanState.PowerOff;
+            _curState = FanState.Idle;
             _criticalPoints = parent.GetComponentInChildren<CriticalPoints>();
             _criticalPoints.Tag = 1;
-            OnStateChange(FanState.PowerOff);
+            OnStateChange(FanState.Idle);
         }
 
         public void ChangeState(FanState nextState)
@@ -163,7 +163,7 @@ namespace Controller
                 _lights[key].gameObject.SetActive(true);
             }
 
-            _criticalPoints.Tag = nextState == FanState.PowerOff ? 1 : 2;
+            _criticalPoints.Tag = nextState == FanState.NotActive ? 1 : 2;
         }
 
         private void TurnOffAllLights()

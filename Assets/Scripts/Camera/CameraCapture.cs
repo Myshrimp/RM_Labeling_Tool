@@ -29,6 +29,9 @@ namespace Robo.Cam
         [Tooltip("照片尺寸（高）")]
         public int photoHeight = 1080;
 
+        [Tooltip("照片格式")] 
+        public ImageFormat imgFormat;
+
         [Tooltip("纯色背景")]
         public bool skyboxSolidColor = false;
         [Tooltip("生成关键点标示图")] 
@@ -113,7 +116,8 @@ namespace Robo.Cam
             
             // 从渲染纹理读取像素
             RenderTexture.active = renderTexture;
-            Texture2D photo = new Texture2D(photoWidth, photoHeight, TextureFormat.RGB24, false);
+            TextureFormat textureFormat = GetTextureFormat();
+            Texture2D photo = new Texture2D(photoWidth, photoHeight, textureFormat, false);
             photo.ReadPixels(new Rect(0, 0, photoWidth, photoHeight), 0, 0);
             photo.Apply();
             
@@ -123,10 +127,11 @@ namespace Robo.Cam
             RenderTexture.active = null;
             
             // 保存图片
+            string imgSuffix = GetImageSuffix();
             byte[] bytes = photo.EncodeToPNG();
             string timestamp = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string prefix = $"{fileNamePrefix}_{timestamp}";
-            string photoFileName = $"{prefix}.png";
+            string photoFileName = $"{prefix}{imgSuffix}";
             string photoPath = savePath+photoFileName;
             
             File.WriteAllBytes(photoPath, bytes);
@@ -149,7 +154,7 @@ namespace Robo.Cam
         private void CalculateAndSaveCoordinates(string prefix, Texture2D texture=null)
         {
             string logFileName= $"{prefix}_log.txt";
-            string dataFileName = $"{prefix}_yolo.txt";
+            string dataFileName = $"{prefix}.txt";
 
             string logFilePath = logPath+logFileName;
             string dataFilePath = dataPath+dataFileName;
@@ -236,6 +241,32 @@ namespace Robo.Cam
         void OnDrawGizmosSelected()
         {
             if (targetCamera == null) return;
+        }
+
+        public TextureFormat GetTextureFormat()
+        {
+            switch (imgFormat)
+            {
+                case ImageFormat.JPG:
+                    return TextureFormat.ARGB32;
+                case ImageFormat.PNG:
+                    return TextureFormat.RGB24;
+            }
+
+            return TextureFormat.ARGB32;
+        }
+
+        public string GetImageSuffix()
+        {
+            switch (imgFormat)
+            {
+                case ImageFormat.JPG:
+                    return ".jpg";
+                case ImageFormat.PNG:
+                    return ".png";
+            }
+
+            return ".jpg";
         }
     }
 }
