@@ -92,6 +92,15 @@ namespace Robo.Cam
         /// </summary>
         private IEnumerator CapturePhotoCoroutine()
         {
+            // 保存图片
+            string imgSuffix = GetImageSuffix();
+            string timestamp = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            string prefix = $"{fileNamePrefix}_{timestamp}";
+            string photoFileName = $"{prefix}{imgSuffix}";
+            string photoPath = savePath+photoFileName;
+            // 计算并保存坐标
+            var normalizedPoints = CalculateAndSaveCoordinates(prefix);
+            
             // 等待一帧确保所有渲染完成
             yield return new WaitForEndOfFrame();
             
@@ -125,23 +134,13 @@ namespace Robo.Cam
             targetCamera.targetTexture = originalRenderTarget;
             targetCamera.clearFlags = originalClearFlags;
             RenderTexture.active = null;
-            
-            // 保存图片
-            string imgSuffix = GetImageSuffix();
-            byte[] bytes = photo.EncodeToPNG();
-            string timestamp = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string prefix = $"{fileNamePrefix}_{timestamp}";
-            string photoFileName = $"{prefix}{imgSuffix}";
-            string photoPath = savePath+photoFileName;
-            
+            byte[] bytes = GetEncodedBytes(photo);
             File.WriteAllBytes(photoPath, bytes);
             Debug.Log($"照片已保存: {photoPath}");
             
+            GeneratePlotImage(normalizedPoints, photo);
             // 销毁临时纹理
             Destroy(photo);
-            
-            // 计算并保存坐标
-            CalculateAndSaveCoordinates(prefix, photo);
             
             // 清理渲染纹理
             RenderTexture.ReleaseTemporary(renderTexture);
@@ -151,7 +150,7 @@ namespace Robo.Cam
         /// <summary>
         /// 计算并保存坐标
         /// </summary>
-        private void CalculateAndSaveCoordinates(string prefix, Texture2D texture=null)
+        private List<Vector2> CalculateAndSaveCoordinates(string prefix)
         {
             string logFileName= $"{prefix}_log.txt";
             string dataFileName = $"{prefix}.txt";
@@ -190,7 +189,7 @@ namespace Robo.Cam
                     
                         // 计算归一化坐标（0-1范围）
                         float normalizedX = pixelX / photoWidth;
-                        float normalizedY = pixelY / photoHeight;
+                        float normalizedY = 1 - pixelY / photoHeight;
                         normalizedPoints.Add(new Vector2(normalizedX, normalizedY));
                         line.Append(" ");
                         line.Append(normalizedX);
@@ -216,13 +215,9 @@ namespace Robo.Cam
             }
             File.WriteAllText(logFilePath, log.ToString());
             File.WriteAllText(dataFilePath, data.ToString());
-            if (texture && generatePlotImg)
-            {
-                PhotoUtil.PlotAndSavePoints(normalizedPoints.ToArray(), texture, plotPath);
-                Debug.Log("Successfully saved plot image");
-            }
 
             Debug.Log($"坐标信息已保存: {logFilePath}");
+            return normalizedPoints;
         }
         
         /// <summary>
@@ -233,6 +228,15 @@ namespace Robo.Cam
             photoWidth = Mathf.Max(1, width);
             photoHeight = Mathf.Max(1, height);
             Debug.Log($"照片尺寸已设置为: {photoWidth}x{photoHeight}");
+        }
+
+        public void GeneratePlotImage(List<Vector2> normalizedPoints, Texture2D texture)
+        {
+            if (texture && generatePlotImg)
+            {
+                PhotoUtil.PlotAndSavePoints(normalizedPoints.ToArray(), texture, plotPath);
+                Debug.Log("Successfully saved plot image");
+            }
         }
         
         /// <summary>
@@ -267,6 +271,19 @@ namespace Robo.Cam
             }
 
             return ".jpg";
+        }
+
+        public byte[] GetEncodedBytes(Texture2D photo)
+        {
+            switch (imgFormat)
+            {
+                case ImageFormat.JPG:
+                    return photo.EncodeToJPG();
+                case ImageFormat.PNG:
+                    return photo.EncodeToPNG();
+            }
+
+            return null;
         }
     }
 }
