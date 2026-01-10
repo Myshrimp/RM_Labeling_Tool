@@ -1,22 +1,22 @@
 ##  一、运行
-1、下载仓库 <code>git clone git@github.com:Myshrimp/RM_Labeling_Tool.git</code>
-2、进入RM_Labeling_Tool文件夹，运行 <code>git submodule update --init</code>
-3、下载UnityHub， 安装editor版本2021.3.42f1c1
-4、在UnityHub上方点击Open Project，打开包含Assets文件夹的目录。打开后，工作目录就是Assets/
-5、打开Scenes文件夹，双击Init.scene，进入初始化场景   
-6、点击运行
+1、下载仓库 <code>git clone git@github.com:Myshrimp/RM_Labeling_Tool.git</code>   
+2、进入RM_Labeling_Tool文件夹，运行 <code>git submodule update --init</code>   
+3、下载UnityHub， 安装editor版本2021.3.42f1c1   
+4、在UnityHub上方点击Open Project，打开包含Assets文件夹的目录。打开后，工作目录就是Assets/   
+5、打开Scenes文件夹，双击Init.scene，进入初始化场景      
+6、点击运行   
 
 ## 二、操作指南
--P: 打开能量机关
--(deprecated)O：截屏（摄像机视角），会保存到Assets/StreamingAssets目录下。如果是打包运行后截屏，则在exe文件的目录下找到XX_Data/StreamingAssets文件夹。（XX是你的项目名）
--F1: 截屏并生成标注数据以及其他文件（可设置不生成，待会介绍），都保存在StreamingAssets目录下。
--R：能量机关旋转/停止旋转
--T：能量机关切换状态
--WASD:控制移动
--Alpha 1(数字键1)：选择操作对象为红方机关
--Alpha 2:                 选择操作对象为蓝方机关
--Alpha 3:                 选择操作对象为两个机关
--Esc :显示或隐藏鼠标
+-P: 打开能量机关   
+-(deprecated)O：截屏（摄像机视角），会保存到Assets/StreamingAssets目录下。如果是打包运行后截屏，则在exe文件的目录下找到XX_Data/StreamingAssets文件夹。（XX是你的项目名）   
+-F1: 截屏并生成标注数据以及其他文件（可设置不生成，待会介绍），都保存在StreamingAssets目录下。   
+-R：能量机关旋转/停止旋转   
+-T：能量机关切换状态   
+-WASD:控制移动   
+-Alpha 1(数字键1)：选择操作对象为红方机关   
+-Alpha 2:                 选择操作对象为蓝方机关   
+-Alpha 3:                 选择操作对象为两个机关   
+-Esc :显示或隐藏鼠标   
 
 ## 三、打包运行
 打开一个场景后，左上角File选项可选择Build Settings，点击Add Open Scene可以添加当前场景，确保Init和SampleScene都被勾选，且Init是第一个
@@ -65,7 +65,7 @@ ScriptableObjects:
  Unity的持久化管理系统，创建一个SO文件后，可以指定在Editor的菜单中显示的资源名称和路径。在Assets/Config目录下可以看到一些配置文件，这些配置文件是继承自SO类的，选中配置文件，可以在Inspector面板中看到它的属性，修改配置不会造成重新编译。
 
  ## 关于场景
-1、如果想自制一些场景，可以考虑更换天空盒(skyBox)，[相关链接](https://blog.csdn.net/Jeffxu_lib/article/details/95477352);   
+ 1、如果想自制一些场景，可以考虑更换天空盒(skyBox)，[相关链接](https://blog.csdn.net/Jeffxu_lib/article/details/95477352);   
 
 2、 在场景中添加光照物体。在Hierarchy（层级）面板下，点击"+"号可以创建物体，找到Light，可以看到有多种类型的光源，比如点光源、直射光、聚光灯...
 
